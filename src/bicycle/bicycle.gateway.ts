@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IBikesListFilters } from 'src/requests/TransactionsListRequest';
 import { ConfigProvider } from 'src/system/ConfigProvider';
 import { Database } from 'src/system/database';
+import { IBicycle } from './models/Bicycle';
 
 const defaultOrderBy = 'id';
 const defaultOrderByList = ['name', 'model'];
@@ -34,6 +35,10 @@ export class BicycleGateway extends Database {
 
 		if (Number.isInteger(filters.skip) && filters.skip >= 0 ) {
 			query = query.offset(filters.skip);
+		}
+
+		if (filters.name) {
+			query = query.where('name',  'like', `%${filters.name.toLowerCase()}%`);
 		}
 
 		if (filters.orderBy && defaultOrderByList.includes(filters.orderBy)) {
@@ -80,6 +85,19 @@ export class BicycleGateway extends Database {
 
 		return this.query({
 			sql,
+		});
+	}
+
+	updateBike(userId: number, id: number, bike: IBicycle): Promise<any> {
+		const sql = `
+		UPDATE ${this.table} SET ? WHERE id = ? AND user_id = ?;
+		`;
+		delete bike.id;
+		delete bike.user_id;
+
+		return this.query({
+			sql,
+			values: [bike, id, userId],
 		});
 	}
 }

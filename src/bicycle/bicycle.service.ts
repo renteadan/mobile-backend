@@ -16,4 +16,9 @@ export class BicycleService {
 		const result = await this.gateway.countBicyclesWithFilters(filters);
 		return result.count;
 	}
+
+	async updateBike(userId: number, bikeId: number, bike: IBicycle): Promise<void> {
+		await this.gateway.updateBike(userId, bikeId, bike);
+		return;
+	}
 }

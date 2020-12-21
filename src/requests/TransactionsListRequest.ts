@@ -11,4 +11,5 @@ export interface IBikesListFilters {
   bikeId?: number;
   skip?: number;
   limit?: number;
+  name?: string;
 }

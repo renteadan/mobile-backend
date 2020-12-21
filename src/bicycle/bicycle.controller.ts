@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Get, Param, Query } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Get, Param, Query, Put, Body } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AuthRequest } from 'src/requests/AuthRequest';
 import { IBikesListFilters } from 'src/requests/TransactionsListRequest';
@@ -36,6 +36,7 @@ export class BicycleController {
 		const { userId } = req.user;
 		const filters: IBikesListFilters = {
 			userId,
+			...query,
 			skip,
 			limit,
 		};
@@ -60,4 +61,12 @@ export class BicycleController {
   	const [bicycle] = await this.service.getBicyclesWithFilters(filters);
   	return bicycle;
   }
+
+  @UseGuards(JwtAuthGuard)
+	@Put(':id')
+	async updateBycicle(@Request() req: AuthRequest, @Param('id') bikeId: number, @Body() body: IBicycle): Promise<void> {
+  	const { userId } = req.user;
+  	await this.service.updateBike(userId, bikeId, body);
+  	return;
+	}
 }
