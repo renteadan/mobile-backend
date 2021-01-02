@@ -5,4 +5,6 @@ export interface IBicycle {
   name: string;
   model: string;
   img_url?: string;
+  lat?: number;
+  lon?: number;
 }
